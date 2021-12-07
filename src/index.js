@@ -4,11 +4,28 @@ import './index.css';
 import App from './components/galleria';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
-
+import {IntlProvider} from 'react-intl';
+import localeEsMessages from "./locales/es";
+import localeEnMessages from "./locales/en";
+function getIdioma()
+{
+  var userLang = navigator.language || navigator.userLanguage;
+  return userLang.split("-")[0]
+}
+function getJson(lang)
+{
+  if(lang==="es")
+  {
+    return localeEsMessages
+  }
+  else{
+    return localeEnMessages
+  }
+}
 ReactDOM.render(
-  <React.StrictMode>
+  <IntlProvider locale={getIdioma()} messages={getJson(getIdioma())}>
     <App />
-  </React.StrictMode>,
+  </IntlProvider>,
   document.getElementById('root')
 );
 

@@ -1,5 +1,8 @@
+import { formatMessage } from '@formatjs/intl';
 import { useEffect, useState } from 'react';
-import {Container,Row,Col, Card, Table} from 'react-bootstrap'
+import {Container,Row,Col, Card, Table} from 'react-bootstrap';
+import {FormattedMessage} from 'react-intl';
+import PieChart from './pieChart';
 function Galleria()
 {
     const [elements,setElements]= useState([]);
@@ -33,7 +36,7 @@ function Galleria()
     const [detail,setDetail] = useState((<></>));
     const [table,setTable] = useState((<></>))
     const [card, SetCard] = useState((<></>))
-    
+    const [grafico,setGrafico] = useState((<></>))
     useEffect(()=>{
         if(elements===null||rooms===null)
         {
@@ -60,24 +63,31 @@ function Galleria()
                 var source;
                 setTable([])
                 var d;
+                var idMessage;
+                var data=[];
                 rooms.forEach(e=>{
                     switch(e.name){
                         case "Living room":
                             source = "https://previews.123rf.com/images/bsd555/bsd5552003/bsd555200300531/142199607-apartment-interior-rgb-color-icon-living-room-furniture-cosy-home-couch-sofa-place-for-rest-and-rela.jpg";
+                            idMessage="Living room"
                             break;
                         case "Kitchen":
                             source="https://icons.veryicon.com/png/o/food--drinks/kitchenware-1/kitchen-8.png"
+                            idMessage="Kitchen"
                             break;
                         case "Dinner room":
                             source="https://cdn-icons-png.flaticon.com/512/925/925620.png"
+                            idMessage="Dinner room"
                             break;
                         default:
                             source = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIg1VvYctAK78qwYCqST7q6XMl4Y78C30d_A&usqp=CAU"
+                            idMessage="Room"
                             break;
                     }
                 
                     if(e.homeId===element.id)
                     {
+                        data = data.concat([e]);
                         d = (
                             <>
                             {d}
@@ -91,8 +101,8 @@ function Galleria()
                                                  <tr>
                                                      <th>#</th>
                                                      <th>ID</th>
-                                                     <th>Device</th>
-                                                     <th>Value</th>
+                                                     <th><FormattedMessage id="devices"/></th>
+                                                     <th><FormattedMessage id="value"/></th>
                                                  </tr>
                                              </thead>
                                              <tbody>
@@ -116,7 +126,7 @@ function Galleria()
                                 <Card.Img variant="top" src = {source}/>
                                 <Card.Body>
                                     <Card.Title>
-                                        {e.name}
+                                        <FormattedMessage id={idMessage}/>
                                     </Card.Title>
                                 </Card.Body>
                             </Card>
@@ -126,6 +136,13 @@ function Galleria()
                     }
                 )
                 setDetail(d);
+                var char = [];
+                data.forEach(e=>{
+                    char = char.concat([{ label: e.name, value: e.powerUsage.value }])
+                })
+                setGrafico((
+                    <PieChart props={char}/>
+                ))
             }}>
                 <Card.Img variant="top" src = {source}/>
                 <Card.Body>
@@ -151,6 +168,9 @@ function Galleria()
             <Row id="detail">
                 {detail}
                 {table}
+            </Row>
+            <Row id="canvas">
+                {grafico}
             </Row>
             
         </Container>
